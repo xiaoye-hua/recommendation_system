@@ -7,15 +7,12 @@ from unittest import TestCase
 
 from src.DataConvert.NCFDataConvertor import NCFDataConvertor
 
+
 class TestNCFDataConvertor(TestCase):
     def setUp(self) -> None:
-        self.raw_dir = 'data/debug'
-        self.output_dir = 'logs/debug'
+        self.raw_dir = 'data/debug/raw'
+        self.output_dir = 'logs/debug/cleaned'
 
     def test_smoke(self):
         convertor = NCFDataConvertor(input_dir=self.raw_dir, output_dir=self.output_dir)
         convertor.convert()
-        # get_train_test_data(raw_data_dir=self.raw_dir
-        #                     , out_put_dir=self.output_dir
-        #                     , split_mode='random'
-        #                     ,test_ratio=0.1)

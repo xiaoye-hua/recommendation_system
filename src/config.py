@@ -5,6 +5,7 @@
 # @Disc    :
 
 csv_sep = '\t'
+origin_data_sep = "::"
 
 origin_user_cols= ['user_id','gender','age','occupation','zip']
 origin_rating_cols = ['user_id','movie_id','rating','timestamp']

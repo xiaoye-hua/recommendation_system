@@ -5,7 +5,7 @@
 # @Disc    :
 
 # ============ General Config =====================
-debug = False
+debug = True
 
 # ============ Config for data convert ===========
 

@@ -4,7 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 from deepmatch.models import NCF
 
 from scripts.preprocess import gen_data_set, gen_model_input
-from scripts.train_config import cleaned_file_name, cleaned_data_dir, debug
+from scripts.train_config import cleaned_data_dir, debug
 """
 Todo
 1. [ ] gen_data_set -> for every user: negative/positive = negsample -> how to decide this fraction ?? 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
         data_dir = 'data/debug'
     else:
         data_dir = cleaned_data_dir
-    data = pd.read_csvdata = pd.read_csv(os.path.join(data_dir, cleaned_file_name))
+    data = pd.read_csvdata = pd.read_csv(os.path.join(data_dir, 'movielens.txt'))
     sparse_features = ["movie_id", "user_id",
                        "gender", "age", "occupation", "zip", ]
     SEQ_LEN = 50
@@ -44,8 +44,10 @@ if __name__ == "__main__":
 
     train_set, test_set = gen_data_set(data, negsample)
 
+
+
     train_model_input, train_label = gen_model_input(train_set, user_profile, SEQ_LEN)
-    test_model_input, test_label = gen_model_input(test_set, user_profile, SEQ_LEN)
+    # test_model_input, test_label = gen_model_input(test_set, user_profile, SEQ_LEN)
 
     # 2.count #unique features for each sparse field and generate feature config for sequence feature
 
@@ -54,6 +56,7 @@ if __name__ == "__main__":
                             "occupation": feature_max_idx["occupation"], "zip": feature_max_idx["zip"]}
 
     item_feature_columns = {"movie_id": feature_max_idx['movie_id']}
+
 
     # 3.Define Model,train,predict and evaluate
     model = NCF(user_feature_columns, item_feature_columns, user_gmf_embedding_dim=20,
@@ -65,6 +68,6 @@ if __name__ == "__main__":
 
     history = model.fit(train_model_input, train_label,
                         batch_size=64, epochs=20, verbose=2, validation_split=0.2, )
-    pred_ans = model.predict(test_model_input, batch_size=64)
+    # pred_ans = model.predict(test_model_input, batch_size=64)
     # print("test LogLoss", round(log_loss(test_label, pred_ans), 4))
     # print("test AUC", round(roc_auc_score(test_label, pred_ans), 4))
