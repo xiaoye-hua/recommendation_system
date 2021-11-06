@@ -5,12 +5,14 @@
 # @Disc    :
 
 # ============ General Config =====================
-debug = True
+debug = False
 
 # ============ Config for data convert ===========
-
-raw_data_dir = 'data/ml-1m'
+debug_user_item_feature_path = 'data/debug/raw'
+debug_cleaned_dir = 'data/debug/cleaned'
+user_item_feature_path = 'data/ml-1m'
 cleaned_data_dir = 'data/ml-1m_cleaned'
 # cleaned_file_name = 'movielens.txt'
+
 
 # ==============================================

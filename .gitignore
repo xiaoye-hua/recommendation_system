@@ -128,9 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# custom ignore dir & file
 
+# custom ignore dir & file
 data/*
 logs/*
 model_training/*
 .idea/*
+
+# directory to keep
+!.gitkeep

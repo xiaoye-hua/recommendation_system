@@ -3,17 +3,11 @@
 # @Author  : Hua Guo
 # @Time    : 2021/10/28 上午11:44
 # @Disc    :
-import pandas as pd
-import os
-
-from scripts.train_config import raw_data_dir, cleaned_data_dir
+from scripts.train_config import user_item_feature_path, cleaned_data_dir
 from src.DataConvert.NCFDataConvertor import NCFDataConvertor
 
 
-model_params = {
-
-}
-convertor = NCFDataConvertor(input_dir=raw_data_dir, output_dir=cleaned_data_dir, test_ratio=0.2, split_mode='random')
+convertor = NCFDataConvertor(input_dir=user_item_feature_path, output_dir=cleaned_data_dir, test_ratio=0.2, split_mode='random')
 convertor.convert()
 
 

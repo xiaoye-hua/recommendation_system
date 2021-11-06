@@ -15,7 +15,7 @@ Todo
 
 if __name__ == "__main__":
     if debug:
-        data_dir = 'data/debug'
+        data_dir = 'data/debug/cleaned'
     else:
         data_dir = cleaned_data_dir
     data = pd.read_csvdata = pd.read_csv(os.path.join(data_dir, 'movielens.txt'))
@@ -42,10 +42,8 @@ if __name__ == "__main__":
 
     user_item_list = data.groupby("user_id")['movie_id'].apply(list)
 
+
     train_set, test_set = gen_data_set(data, negsample)
-
-
-
     train_model_input, train_label = gen_model_input(train_set, user_profile, SEQ_LEN)
     # test_model_input, test_label = gen_model_input(test_set, user_profile, SEQ_LEN)
 
@@ -68,6 +66,7 @@ if __name__ == "__main__":
 
     history = model.fit(train_model_input, train_label,
                         batch_size=64, epochs=20, verbose=2, validation_split=0.2, )
-    # pred_ans = model.predict(test_model_input, batch_size=64)
+    pred_ans = model.predict(train_model_input, batch_size=64)
+    print(pred_ans)
     # print("test LogLoss", round(log_loss(test_label, pred_ans), 4))
     # print("test AUC", round(roc_auc_score(test_label, pred_ans), 4))

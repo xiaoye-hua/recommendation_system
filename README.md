@@ -8,4 +8,5 @@ Playground of recommendation system
 ### Step 1. Environment Setup
 ```shell script
 export PYTHONPATH=./:PYTHONPATH
+
 ```
