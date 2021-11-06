@@ -11,6 +11,7 @@ from src.FeatureCreator.NCFFeatureCreator import NCFFeatureCreator
 from src.Pipeline.NCFPipeline import NCFPipeline
 from src.config import csv_sep
 from test.config import raw_data_dir, cleaned_data_dir
+from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
 
 class TestModelTrain(TestCase):
@@ -32,6 +33,18 @@ class TestModelTrain(TestCase):
         self.pipeline.eval(X=self.features.copy(), y=self.features['rating'])
         self.pipeline.save_pipeline()
 
-    # def test_load(self):
+    # def test_NCFPipeline_load(self):
     #     after loading the model, the column names changed to 'input_1', 'input_2'....
     #     self.new_pipeline.eval(X=self.features.copy(), y=self.features['rating'])
+
+    def test_ItemPopPipeline_train_eval_predict(self):
+        pipeline = ItemPopPipeline(model_path='logs', model_training=True)
+        train_params = {
+            "df_for_encode_train": self.features
+            , 'batch_size': 64
+            , 'epoches': 1
+        }
+        pipeline.train(X=self.features.copy(), y=self.features['rating'], train_params=train_params)
+        pipeline.eval(X=self.features.copy(), y=self.features['rating'])
+        pipeline.save_pipeline()
+

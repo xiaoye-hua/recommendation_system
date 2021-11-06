@@ -5,9 +5,21 @@
 # @Disc    :
 from scripts.train_config import user_item_feature_path, cleaned_data_dir
 from src.DataConvert.NCFDataConvertor import NCFDataConvertor
+from scripts.train_config import debug_user_item_feature_path, debug_cleaned_dir, debug
 
+if debug:
+    user_item_path = debug_user_item_feature_path
+    train_data_path = debug_cleaned_dir
+else:
+    user_item_path = user_item_feature_path
+    train_data_path = cleaned_data_dir
 
-convertor = NCFDataConvertor(input_dir=user_item_feature_path, output_dir=cleaned_data_dir, test_ratio=0.2, split_mode='random')
+convertor = NCFDataConvertor(input_dir=user_item_path, output_dir=train_data_path
+                             , split_method='leave_one_out'
+                             , test_ratio=0.2
+                             # , split_mode='random'
+                             , negsample=410
+                             )
 convertor.convert()
 
 

@@ -13,6 +13,6 @@ class TestNCFDataConvertor(TestCase):
         self.raw_dir = 'data/debug/raw'
         self.output_dir = 'logs/debug/cleaned'
 
-    def test_smoke(self):
-        convertor = NCFDataConvertor(input_dir=self.raw_dir, output_dir=self.output_dir)
+    def test_split_method(self):
+        convertor = NCFDataConvertor(input_dir=self.raw_dir, output_dir=self.output_dir, split_method='leave_one_out')
         convertor.convert()
