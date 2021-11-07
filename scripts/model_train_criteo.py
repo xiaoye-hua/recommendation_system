@@ -9,18 +9,18 @@ import os
 import logging
 logging.getLogger(__name__)
 
-from src.FeatureCreator.NCFFeatureCreator import NCFFeatureCreator
-from src.Pipeline.NCFPipeline import NCFPipeline
-from src.Pipeline.ItemPopPipeline import ItemPopPipeline
+# from src.FeatureCreator.NCFFeatureCreator import NCFFeatureCreator
+# from src.Pipeline.NCFPipeline import NCFPipeline
+# from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 from scripts.train_config import user_item_feature_path, cleaned_data_dir, debug, debug_user_item_feature_path, debug_cleaned_dir
-from src.config import csv_sep
-from src.ModelEval import ModelEval
+# from src.config import csv_sep
+# from src.ModelEval import ModelEval
 from scripts.train_config import config_dict
 from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
-mark = 'deepFM_1107_criteo'
-
+# mark = 'deepFM_1107_criteo'
+mark = 'WDL_1107_criteo'
 # pipeline_class = NCFPipeline
 # pipeline_class = ItemPopPipeline
 # fc_class = NCFFeatureCreator
@@ -60,7 +60,7 @@ logging.info(f"Train data shape: {train.shape}")
 logging.info(f"Test data shape: {test.shape}")
 
 train_params = {
-    "df_for_encode_train": features
+    "df_for_encode_train": features.copy()
     , 'batch_size': 256
     , 'epoches': 2
 }

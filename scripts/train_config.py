@@ -7,6 +7,7 @@ import logging
 from src.FeatureCreator.NCFFeatureCreator import NCFFeatureCreator
 from src.FeatureCreator.DeepFMFeatureCreator import DeepFMFeatureCreator
 from src.Pipeline.DeepFMPipeline import DeepFMPipeline
+from src.Pipeline.WideDeepPipeline import WideDeepPipeline
 from src.Pipeline.NCFPipeline import NCFPipeline
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
@@ -22,6 +23,12 @@ config_dict = {
     'deepFM_1107_criteo': {
         'feature_creator': DeepFMFeatureCreator
         , 'pipeline': DeepFMPipeline
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+    }
+    ,    'WDL_1107_criteo': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': WideDeepPipeline
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }

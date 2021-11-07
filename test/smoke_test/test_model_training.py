@@ -14,13 +14,14 @@ from src.config import csv_sep, criteo_target_col, criteo_csv_sep, criteo_df_col
 from test.config import raw_data_dir, cleaned_data_dir, criteo_data_dir
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 from src.Pipeline.DeepFMPipeline import DeepFMPipeline
+from src.Pipeline.WideDeepPipeline import WideDeepPipeline
 
 
 class TestModelTrain(TestCase):
     def setUp(self) -> None:
         self.fc = NCFFeatureCreator(profile_feature_dir=raw_data_dir)
         self.pipeline = NCFPipeline(model_path='logs', model_training=True)
-        self.new_pipeline = NCFPipeline(model_path='logs', model_training=False)
+        # self.new_pipeline = NCFPipeline(model_path='logs', model_training=False)
         train_data = pd.read_csv(os.path.join(cleaned_data_dir, 'train.csv'), sep=csv_sep)
         self.features = self.fc.get_features(df=train_data)
 
@@ -54,17 +55,36 @@ class TestModelTrain(TestCase):
         features = pd.read_csv(criteo_data_dir,
                                  sep=criteo_csv_sep,
                                  header=None, names=criteo_df_cols
-                               # , nrows=2
+                               , nrows=10
                                )
         features = DeepFMFeatureCreator().get_features(features)
         train_params = {
-            "df_for_encode_train": features
+            "df_for_encode_train": features.copy()
             , 'batch_size': 64
             , 'epoches': 1
         }
         DeepFM = DeepFMPipeline(model_path='logs', model_training=True)
         DeepFM.train(X=features.copy(), y=features[criteo_target_col], train_params=train_params)
         DeepFM.predict_proba(X=features.copy())
+        # DeepFM.eval(X=features.copy(), y=features[criteo_target_col])
+        # DeepFM.save_pipeline()
+
+    def test_WDL_train_eval_save_load_eval(self):
+        # features = pd.read_csv(criteo_data_dir)
+        features = pd.read_csv(criteo_data_dir,
+                                 sep=criteo_csv_sep,
+                                 header=None, names=criteo_df_cols
+                               , nrows=10
+                               )
+        features = DeepFMFeatureCreator().get_features(features)
+        train_params = {
+            "df_for_encode_train": features.copy()
+            , 'batch_size': 64
+            , 'epoches': 1
+        }
+        wide_deep = WideDeepPipeline(model_path='logs', model_training=True)
+        wide_deep.train(X=features.copy(), y=features[criteo_target_col], train_params=train_params)
+        wide_deep.predict_proba(X=features.copy())
         # DeepFM.eval(X=features.copy(), y=features[criteo_target_col])
         # DeepFM.save_pipeline()
 

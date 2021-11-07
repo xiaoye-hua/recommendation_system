@@ -17,17 +17,17 @@ class NewOrdinalEncoder(OrdinalEncoder):
             # handle_unknown='use_encoded_value', unknown_value='null'
         )
         self.category_cols = category_cols
-        self.null_map = {col: 'null' for col in self.category_cols}
+        # self.null_map = {col: 'null' for col in self.category_cols}
         self.begin_idx = begin_idx
 
     def fit(self, X, y=None):
-        X.fillna(self.null_map, inplace=True)
+        # X.fillna(self.null_map, inplace=True)
         # X[self.category_cols] = X[self.category_cols].astype('str')
         self.ordinal_encoder.fit(X[self.category_cols])
         return self
 
     def transform(self, X):
         # X[self.category_cols] = X[self.category_cols].astype('str')
-        X.fillna(self.null_map, inplace=True)
+        # X.fillna(self.null_map, inplace=True)
         X.loc[:, self.category_cols] = self.ordinal_encoder.transform(X[self.category_cols]).astype('int')+self.begin_idx
         return X

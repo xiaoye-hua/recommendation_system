@@ -3,10 +3,11 @@
 # @Author  : Hua Guo
 # @Time    : 2021/10/29 上午9:21
 # @Disc    :
-
 from abc import ABCMeta, abstractmethod
 import os
 import pandas as pd
+import logging
+logging.getLogger(__name__)
 
 from src.utils.plot_utils import binary_classification_eval
 
@@ -46,3 +47,4 @@ class BasePipeline(metaclass=ABCMeta):
         self._check_dir(fig_dir)
         predict_prob = self.predict_proba(X)
         binary_classification_eval(test_y=y, predict_prob=predict_prob, fig_dir=fig_dir)
+        logging.info(f"Model eval result saved in {fig_dir}")
