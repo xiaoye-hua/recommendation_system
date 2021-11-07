@@ -134,6 +134,8 @@ data/*
 logs/*
 model_training/*
 .idea/*
+model_finished
+.DS_Store
 
 # directory to keep
 !.gitkeep

@@ -14,14 +14,20 @@ from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 from scripts.train_config import user_item_feature_path, cleaned_data_dir, debug, debug_user_item_feature_path, debug_cleaned_dir
 from src.config import csv_sep
 from src.ModelEval import ModelEval
+# from scripts.train_config import config_dict
 
 # =============== config ===============
-# pipeline_class = NCFPipeline
-pipeline_class = ItemPopPipeline
+mark = 'ncf_1106'
+
+pipeline_class = NCFPipeline
+# pipeline_class = ItemPopPipeline
 fc_class = NCFFeatureCreator
-model_path = 'model_training/ncf_1106'
+
+# pipeline_class = config_dict[mark]['pipeline']
+# fc_class = config_dict[mark]['feature_creator']
 
 
+model_path = os.path.join('model_training', mark)
 if debug:
     user_item_path = debug_user_item_feature_path
     train_data_path = debug_cleaned_dir

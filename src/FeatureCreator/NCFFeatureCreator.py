@@ -19,8 +19,8 @@ class NCFFeatureCreator(BaseFeatureCreator):
         self.item_profile = self._load_origin_data(file_path=os.path.join(profile_feature_dir, 'movies.dat'), cols=orgin_movie_cols)
         self.transformer = None
 
-    def get_features(self, uid_item_df: pd.DataFrame) -> pd.DataFrame:
-        uid_item_df = uid_item_df.merge(self.user_profile, how='left', on='user_id').merge(self.item_profile, how='left', on='movie_id')
+    def get_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        uid_item_df = df.merge(self.user_profile, how='left', on='user_id').merge(self.item_profile, how='left', on='movie_id')
         return uid_item_df
 
     def _load_origin_data(self, file_path: str, cols: List[str]) -> pd.DataFrame:

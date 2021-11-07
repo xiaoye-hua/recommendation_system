@@ -9,5 +9,5 @@ from abc import ABCMeta, abstractmethod
 class BaseFeatureCreator(metaclass=ABCMeta):
 
     @abstractmethod
-    def get_features(self, **kwargs):
+    def get_features(self, df, **kwargs):
         pass

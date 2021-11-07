@@ -7,3 +7,4 @@
 
 raw_data_dir = 'data/debug/raw'
 cleaned_data_dir = 'data/debug/cleaned'
+criteo_data_dir = 'data/debug/debug_criteo_data/train.txt'

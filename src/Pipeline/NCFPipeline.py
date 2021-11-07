@@ -11,10 +11,9 @@ import joblib
 import logging
 from deepmatch.models import NCF
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import LabelEncoder
 
 from src.Pipeline import BasePipeline
-from src.NewOrdinalEncoder import NewOrdinalEncoder
+from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
 from src.utils.plot_utils import binary_classification_eval
 
 
