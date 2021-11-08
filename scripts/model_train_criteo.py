@@ -20,7 +20,10 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
 # mark = 'deepFM_1107_criteo'
-mark = 'WDL_1107_criteo'
+mark = 'LR_1108_criteo'
+# mark = 'XGB_1108_criteo'
+# mark = 'LR_onehot_1108_criteo'
+
 # pipeline_class = NCFPipeline
 # pipeline_class = ItemPopPipeline
 # fc_class = NCFFeatureCreator
@@ -43,7 +46,10 @@ else:
 
 
 fc = fc_class()
-pipeline = pipeline_class(model_path=model_path, model_training=True)
+model_params = {
+    'scale_pos_weight': 3
+}
+pipeline = pipeline_class(model_path=model_path, model_training=True, model_params=model_params)
 # train_data = pd.read_csv(data_dir, sep=
 logging.info('Loading raw data...')
 train_data = pd.read_csv(data_dir,
@@ -53,22 +59,29 @@ train_data = pd.read_csv(data_dir,
                 , nrows=2000000
                          )
 logging.info(f"Feature creating...")
-features = fc.get_features(df=train_data)
+features, feature_cols = fc.get_features(df=train_data)
 
 train, test = train_test_split(features, test_size=0.2)
-logging.info(f"Train data shape: {train.shape}")
-logging.info(f"Test data shape: {test.shape}")
+logging.info(f"Train data + label shape: {train.shape}")
+logging.info(f"Test data + label shape: {test.shape}")
 
 train_params = {
     "df_for_encode_train": features.copy()
     , 'batch_size': 256
     , 'epoches': 2
+    , 'train_valid': True
+    , 'one_hot': False
 }
-pipeline.train(X=train.copy(), y=train[criteo_target_col], train_params=train_params)
+pipeline.train(X=train.copy()[feature_cols], y=train[criteo_target_col], train_params=train_params)
 logging.info(f"Evaling...")
 logging.info(f"Eval...")
 pipeline.eval(
-    X=test, y=test[criteo_target_col]
+    X=test[feature_cols], y=test[criteo_target_col]
+    # X=train.copy()
+    # , y=train[criteo_target_col]
+              )
+pipeline.eval(
+    X=features[feature_cols], y=features[criteo_target_col]
     # X=train.copy()
     # , y=train[criteo_target_col]
               )
