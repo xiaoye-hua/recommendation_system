@@ -20,9 +20,11 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
 # mark = 'deepFM_1107_criteo'
-mark = 'LR_1108_criteo'
-# mark = 'XGB_1108_criteo'
+# mark = 'LR_1108_criteo'
+mark = 'XGB_1108_criteo'
 # mark = 'LR_onehot_1108_criteo'
+# mark = 'xgblr_1109_criteo'
+
 
 # pipeline_class = NCFPipeline
 # pipeline_class = ItemPopPipeline
@@ -71,8 +73,10 @@ train_params = {
     , 'epoches': 2
     , 'train_valid': True
     , 'one_hot': False
+    # , 'lr': True
 }
 pipeline.train(X=train.copy()[feature_cols], y=train[criteo_target_col], train_params=train_params)
+pipeline.save_pipeline()
 logging.info(f"Evaling...")
 logging.info(f"Eval...")
 pipeline.eval(
@@ -80,11 +84,12 @@ pipeline.eval(
     # X=train.copy()
     # , y=train[criteo_target_col]
               )
-pipeline.eval(
-    X=features[feature_cols], y=features[criteo_target_col]
-    # X=train.copy()
-    # , y=train[criteo_target_col]
-              )
+logging.info(f"Eval finished")
+# pipeline.eval(
+#     X=features[feature_cols], y=features[criteo_target_col]
+#     # X=train.copy()
+#     # , y=train[criteo_target_col]
+#               )
 
 
 # logging.info(f"Loading testing data ...")

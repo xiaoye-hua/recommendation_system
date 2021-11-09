@@ -52,6 +52,13 @@ config_dict = {
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
+    , 'xgblr_1109_criteo': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': XGBoostPipeline
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+    }
+#
 }
 
 # ============ Config for data convert ===========
