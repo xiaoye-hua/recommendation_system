@@ -13,6 +13,7 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve, auc
 from sklearn.pipeline import Pipeline
+import mlflow
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from src.Pipeline import BasePipeline
 from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
@@ -24,9 +25,11 @@ from src.utils.plot_utils import plot_feature_importances, binary_classification
 class LogisticRegressionPipeline(BasePipeline):
     def __init__(self, model_path: str, model_training=False, **kwargs):
         super(LogisticRegressionPipeline, self).__init__(model_path=model_path, model_training=model_training)
-        self.pipeline = None
         self.model_file_name = "model.pkl"
         self.eval_result_path = os.path.join(self.model_path, 'eval')
+        self.pipeline = None
+        if not model_training:
+            self.load_pipeline()
 
     def train(self, X, y, train_params):
         pipeline_lst = []
@@ -69,8 +72,11 @@ class LogisticRegressionPipeline(BasePipeline):
             value=self.pipeline,
             filename=os.path.join(self.model_path, self.model_file_name)
         )[0]
+        # mlflow.sklearn.save_model(sk_model=self.pipeline
+        #                           ,path=self.model_path)
 
     def load_pipeline(self):
         self.pipeline = joblib.load(
             filename=os.path.join(self.model_path, self.model_file_name)
         )
+        # self.pipeline = mlflow.sklearn.load_model(model_uri=self.model_path)

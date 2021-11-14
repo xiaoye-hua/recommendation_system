@@ -139,3 +139,4 @@ model_finished
 
 # directory to keep
 !.gitkeep
+mlruns/*

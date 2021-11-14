@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File    : test_model_training.py
+# @File    : test_model_train_eval_save_load_inference.py
 # @Author  : Hua Guo
 # @Time    : 2021/10/29 上午10:10
 # @Disc    :
@@ -15,6 +15,7 @@ from test.config import raw_data_dir, cleaned_data_dir, criteo_data_dir
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 from src.Pipeline.DeepFMPipeline import DeepFMPipeline
 from src.Pipeline.WideDeepPipeline import WideDeepPipeline
+from src.Pipeline.LogisticRegressionPipeline import LogisticRegressionPipeline
 
 
 class TestModelTrain(TestCase):
@@ -87,4 +88,23 @@ class TestModelTrain(TestCase):
         wide_deep.predict_proba(X=features.copy())
         # DeepFM.eval(X=features.copy(), y=features[criteo_target_col])
         # DeepFM.save_pipeline()
+
+    def test_LogisticRegression_train_eval_save_load_eval(self):
+        features = pd.read_csv(criteo_data_dir,
+                                 sep=criteo_csv_sep,
+                                 header=None, names=criteo_df_cols
+                               , nrows=100
+                               )
+        features, feature_cols  = DeepFMFeatureCreator().get_features(features)
+        train_params = {
+            "df_for_encode_train": features.copy()
+            , 'batch_size': 64
+            , 'epoches': 1
+        }
+        pipeline = LogisticRegressionPipeline(model_path='logs/test1114', model_training=True)
+        pipeline.train(X=features.copy()[feature_cols], y=features[criteo_target_col], train_params=train_params)
+        pipeline.eval(X=features.copy()[feature_cols], y=features[criteo_target_col])
+        pipeline.save_pipeline()
+        new_pipeline = LogisticRegressionPipeline(model_path='logs/test1114', model_training=False)
+        new_pipeline.eval(X=features.copy()[feature_cols], y=features[criteo_target_col])
 

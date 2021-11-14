@@ -20,8 +20,8 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
 # mark = 'deepFM_1107_criteo'
-# mark = 'LR_1108_criteo'
-mark = 'XGB_1108_criteo'
+mark = 'LR_1108_criteo'
+# mark = 'XGB_1108_criteo'
 # mark = 'LR_onehot_1108_criteo'
 # mark = 'xgblr_1109_criteo'
 
