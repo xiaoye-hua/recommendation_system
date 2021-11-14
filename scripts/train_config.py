@@ -14,7 +14,7 @@ from src.Pipeline.NCFPipeline import NCFPipeline
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
 # ============ General Config =====================
-debug = False
+debug = True
 logging.basicConfig(level='INFO',
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',)
