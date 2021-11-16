@@ -81,13 +81,14 @@ config_dict = {
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
+    # this set of params does not work right now.
     , 'xgblr_1116_criteo': {
         'feature_creator': DeepFMFeatureCreator
         , 'pipeline': XGBoostLRPipeline
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
-    , 'xgblr_new_1116_criteo': {
+    , 'xgblr3_1116_criteo': {
         'feature_creator': DeepFMFeatureCreator
         , 'pipeline': XGBoostLRPipeline
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
