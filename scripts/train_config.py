@@ -18,7 +18,10 @@ from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 debug = True
 logging.basicConfig(level='INFO',
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                    datefmt='%a, %d %b %Y %H:%M:%S',)
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    # filename=os.path.join(model_path, 'train.log')
+                    )
+
 
 
 # =============== Train config ===================

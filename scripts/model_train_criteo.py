@@ -19,6 +19,8 @@ from scripts.train_config import config_dict
 from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
+
+
 # mark = 'deepFM_1107_criteo'
 # mark = 'LR_1108_criteo'
 # mark = 'XGB_1108_criteo'
@@ -49,6 +51,8 @@ if debug:
     model_path = 'model_training/debug'
 else:
     data_dir = config_dict[mark]['production_data_dir']
+
+
 
 
     # user_item_path = user_item_feature_path

@@ -30,46 +30,52 @@ class XGBoostLRPipeline(XGBoostPipeline):
         df_for_encode_train = train_params['df_for_encode_train']
         train_valid = train_params.get("train_valid", False)
         transformer = NewOrdinalEncoder(category_cols=self.cate_encode_cols)
-        transformer.fit(df_for_encode_train)
+        xgb_tranformer  = XGBoostLRDataProcess( #xgb_model=self.xgb, #train_params=train_params
+             )
+        lr = LogisticRegression(penalty='l1', solver='saga', verbose=1)
+        transformer.fit(df_for_encode_train.copy())
         X = transformer.transform(X=X)
+        logging.info(f"xgb_transformer fitting ...")
+        X = xgb_tranformer.fit_transform(X=X, y=y)
+        logging.info("xgb_transformer finished")
+        lr.fit(X, y)
         pipeline_lst.append(("new_ordinal_transformer", transformer))
-        self.ordianl = transformer
-        if train_params.get('pca_component_num', False):
-            pca_component_num = train_params['pca_component_num']
-            self.pca_component_num = pca_component_num
-            min_max = MinMaxScaler()
-            pca = PCA(n_components=pca_component_num)
-            X = min_max.fit_transform(X)
-            X = pca.fit_transform(X)
-            pipeline_lst.extend(
-                [
-                    ('min_max', min_max)
-                    , ('pca', pca)
-                ]
-            )
-        self.xgb = XGBClassifier(**self.model_params)
-        print(f"Model params are {self.xgb.get_params()}")
-
-        if train_valid:
-            train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2)
-            train_params.update(
-                {
-                    'verbose': True
-                    , 'eval_metric': 'logloss'
-                    , 'eval_set': [[train_X, train_y], [test_X, test_y]]
-                }
-            )
         pipeline_lst.append(
-            ('xgblr_dataprocess', XGBoostLRDataProcess( #xgb_model=self.xgb, #train_params=train_params
-                                                       ))
+            ('xgblr_dataprocess', xgb_tranformer)
         )
         pipeline_lst.append(
-            ('lr', LogisticRegression(penalty='l1', solver='saga', verbose=1))
+            ('lr', lr)
         )
         self.pipeline = Pipeline(pipeline_lst)
         logging.info(f"Pipeline info: ")
         logging.info(self.pipeline)
-        self.pipeline.fit(X, y)
+        # self.ordianl = transformer
+        # if train_params.get('pca_component_num', False):
+        #     pca_component_num = train_params['pca_component_num']
+        #     self.pca_component_num = pca_component_num
+        #     min_max = MinMaxScaler()
+        #     pca = PCA(n_components=pca_component_num)
+        #     X = min_max.fit_transform(X)
+        #     X = pca.fit_transform(X)
+        #     pipeline_lst.extend(
+        #         [
+        #             ('min_max', min_max)
+        #             , ('pca', pca)
+        #         ]
+        #     )
+        # self.xgb = XGBClassifier(**self.model_params)
+        # print(f"Model params are {self.xgb.get_params()}")
+
+        # if train_valid:
+        #     train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2)
+        #     train_params.update(
+        #         {
+        #             'verbose': True
+        #             , 'eval_metric': 'logloss'
+        #             , 'eval_set': [[train_X, train_y], [test_X, test_y]]
+        #         }
+        #     )
+
 
 
 
