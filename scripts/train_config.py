@@ -10,6 +10,7 @@ from src.Pipeline.DeepFMPipeline import DeepFMPipeline
 from src.Pipeline.WideDeepPipeline import WideDeepPipeline
 from src.Pipeline.LogisticRegressionPipeline import LogisticRegressionPipeline
 from src.Pipeline.XGBoostPipeline import XGBoostPipeline
+from src.Pipeline.XGBoostLRPipeline import XGBoostLRPipeline
 from src.Pipeline.NCFPipeline import NCFPipeline
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
@@ -74,6 +75,12 @@ config_dict = {
         , 'one_hot': True
         , 'dense_bin': True
         , 'dense_standard': False
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+    }
+    , 'xgblr_1116_criteo': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': XGBoostLRPipeline
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
