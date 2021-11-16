@@ -116,7 +116,7 @@ class XGBoostPipeline(BasePipeline):
         )[0]
         logging.info(file_name)
 
-    def eval(self, X: pd.DataFrame, y: pd.DataFrame, default_fig_dir=None, importance=True) -> None:
+    def eval(self, X: pd.DataFrame, y: pd.DataFrame, default_fig_dir=None, importance=False) -> None:
         if default_fig_dir is None:
             fig_dir = self.eval_result_path
         else:

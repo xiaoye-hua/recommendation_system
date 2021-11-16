@@ -24,7 +24,7 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 # mark = 'XGB_1108_criteo'
 # mark = 'xgblr_1109_criteo'
 # mark = 'LR_one_hot_1108_criteo'
-mark = 'xgblr_1116_criteo'
+mark = 'xgblr_new_1116_criteo'
 logging.info(f"Mark: {mark}")
 logging.info(config_dict[mark])
 
