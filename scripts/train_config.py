@@ -14,7 +14,7 @@ from src.Pipeline.NCFPipeline import NCFPipeline
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
 # ============ General Config =====================
-debug = True
+debug = False
 logging.basicConfig(level='INFO',
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',)
@@ -40,15 +40,16 @@ config_dict = {
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
-    ,    'XGB_1108_criteo': {
+    , 'LR_one_hot_1108_criteo': {
         'feature_creator': DeepFMFeatureCreator
-        , 'pipeline': XGBoostPipeline
+        , 'pipeline': LogisticRegressionPipeline
+        , 'one_hot': True
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
-    , 'LR_onehot_1108_criteo': {
+    ,    'XGB_1108_criteo': {
         'feature_creator': DeepFMFeatureCreator
-        , 'pipeline': LogisticRegressionPipeline
+        , 'pipeline': XGBoostPipeline
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
@@ -58,7 +59,24 @@ config_dict = {
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
-#
+    , 'LR_1116_criteo_DenseBinStand_CateOnehotSVD': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': LogisticRegressionPipeline
+        , 'one_hot': True
+        , 'dense_bin': True
+        , 'dense_standard': True
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+    }
+    ,  'LR_1116_criteo_DenseBin_CateOnehotSVD': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': LogisticRegressionPipeline
+        , 'one_hot': True
+        , 'dense_bin': True
+        , 'dense_standard': False
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+    }
 }
 
 # ============ Config for data convert ===========

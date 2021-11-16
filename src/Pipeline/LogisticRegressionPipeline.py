@@ -13,12 +13,17 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve, auc
 from sklearn.pipeline import Pipeline
+from sklearn.compose import make_column_transformer
+from sklearn.compose import make_column_selector
+from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
+from sklearn.decomposition import TruncatedSVD
+from sklearn.compose import ColumnTransformer
 import mlflow
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, KBinsDiscretizer
 from src.Pipeline import BasePipeline
 from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
 from src.DataPreprocess.NewOneHotEncoder import NewOneHotEncoder
-from src.config import criteo_sparse_features
+from src.config import criteo_sparse_features, criteo_dense_features
 from src.utils.plot_utils import plot_feature_importances, binary_classification_eval
 
 
@@ -36,29 +41,51 @@ class LogisticRegressionPipeline(BasePipeline):
         df_for_encode_train = train_params['df_for_encode_train']
         # train_valid = train_params["train_valid"]
         one_hot = train_params.get('one_hot', False)
+        dense_bin = train_params.get('dense_bin', False)
+        dense_standard = train_params.get('dense_standard', False)
+
+        numeric_features = criteo_dense_features  # ["age", "fare"]
+        numeric_steps = []
+        if dense_standard:
+            numeric_steps.append(
+                ('standard', StandardScaler())
+            )
+        if dense_bin:
+            numeric_steps.append(
+                ('dense_bin', KBinsDiscretizer(n_bins=20, encode='ordinal'))
+            )
+        numeric_transformer = Pipeline(
+            steps=numeric_steps
+        )
+        categorical_features = criteo_sparse_features  # ["embarked", "sex", "pclass"]
         if one_hot:
-            transformer = NewOneHotEncoder(sparse_cols=criteo_sparse_features)
+            cate_encoder = OneHotEncoder()
+            categorical_transformer = Pipeline([
+                ('one_hot', cate_encoder)
+                , ('pca', TruncatedSVD(n_components=50))
+            ])
         else:
-            transformer = NewOrdinalEncoder(category_cols=criteo_sparse_features)
+            categorical_transformer = OrdinalEncoder()
+
+        transformer = ColumnTransformer(
+            transformers=[
+                ("num", numeric_transformer, numeric_features),
+                ("cat", categorical_transformer, categorical_features),
+            ]
+        )
+        # transformer = make_column_transformer(
+        #     (categorical_transformer, make_column_selector(dtype_include="object"))
+        #     , remainder='passthrough'
+        # )
         transformer.fit(df_for_encode_train)
+        logging.info(f"Data transformation steps: ")
+        logging.info(transformer)
         logging.info(f"Data dims before transformer: {X.shape}")
         X = transformer.transform(X=X)
         logging.info(f"Data dims after transformer: {X.shape}")
         pipeline_lst.append(("new_ordinal_transformer", transformer))
-        if train_params.get('pca_component_num', False):
-            pca_component_num = train_params['pca_component_num']
-            # sc_V = MinMaxScaler()
-            pca = PCA(pca_component_num)
-            pipeline_lst.extend([
-                # ('min_max', sc_V)
-                # ,
-                ('pca', pca)
-            ])
-            # X = sc_V.fit_transform(X)
-            X = pca.fit_transform(X)
-
         model = LogisticRegression(
-            penalty='l1', solver='saga'
+            penalty='l1', solver='saga', verbose=1
         )
         model.fit(X=X, y=y)
         pipeline_lst.append(('lr', model))

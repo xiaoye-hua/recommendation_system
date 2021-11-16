@@ -85,6 +85,10 @@ def binary_classification_eval(test_y: pd.DataFrame, predict_prob: pd.DataFrame,
     print("*"*20)
     print(classification_report(test_y, test_label_optimal))
     print("*"*20)
+    with open(os.path.join(fig_dir, 'performance.txt'), 'w') as f:
+        f.writelines(f"Optimal threshold: {optimal_threshold} \n")
+        f.writelines("*" * 20 + "\n")
+        f.writelines(classification_report(test_y, test_label_optimal))
     # confusion matrix
     pretty_plot_confusion_matrix(df_cm=pd.DataFrame(confusion_matrix(test_y, test_label_optimal)), fig_dir=fig_dir)
     # auc
