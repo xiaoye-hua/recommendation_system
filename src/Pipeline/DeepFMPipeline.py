@@ -9,15 +9,23 @@ import tensorflow as tf
 from deepctr.models import DeepFM
 from deepctr.feature_column import SparseFeat, DenseFeat
 
-from src.Pipeline import BasePipeline
 from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
 from src.DataPreprocess.NewMinMaxScaler import NewMinMaxSaler
 from src.config import criteo_sparse_features, criteo_dense_features
+from src.Pipeline.BaseDNNPipeline import BaseDNNPipeline
 
 
-class DeepFMPipeline(BasePipeline):
+class DeepFMPipeline(BaseDNNPipeline):
     def __init__(self, model_path: str, model_training=False, **kwargs):
         super(DeepFMPipeline, self).__init__(model_path=model_path, model_training=model_training, **kwargs)
+        self.model_file_name = 'model.pb'
+        self.preprocess_file_name = 'preprocess.pkl'
+        self.model_training = model_training
+        if self.model_training:
+            self.preprocess_pipeline = None
+            self.model = None
+        else:
+            self.preprocess_pipeline, self.model = self.load_pipeline()
 
     def train(self, X, y, train_params):
         pre_process_pipeline_lst = []
@@ -63,9 +71,13 @@ class DeepFMPipeline(BasePipeline):
 
     def _process_train_data(self, X):
         train_model_input = {}
-        for col in criteo_sparse_features+criteo_dense_features:
-            train_model_input[col] = X[col]
-        # print(train_model_input)
+        if self.model_training:
+            for col in criteo_sparse_features+criteo_dense_features:
+                train_model_input[col] = X[col]
+        else:
+            for idx, col in enumerate(criteo_sparse_features+criteo_dense_features):
+                target_col = f'input_{idx+1}'
+                train_model_input[target_col] = X[col]
         return train_model_input
 
     def predict_proba(self, X):
@@ -73,9 +85,3 @@ class DeepFMPipeline(BasePipeline):
         trian_input = self._process_train_data(X)
         prob = self.model.predict(trian_input)
         return prob
-
-    def save_pipeline(self):
-        pass
-
-    def load_pipeline(self):
-        pass
