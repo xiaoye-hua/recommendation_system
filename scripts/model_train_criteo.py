@@ -12,7 +12,7 @@ logging.getLogger(__name__)
 # from src.FeatureCreator.NCFFeatureCreator import NCFFeatureCreator
 # from src.Pipeline.NCFPipeline import NCFPipeline
 # from src.Pipeline.ItemPopPipeline import ItemPopPipeline
-from scripts.train_config import user_item_feature_path, cleaned_data_dir, debug, debug_user_item_feature_path, debug_cleaned_dir
+from scripts.train_config import user_item_feature_path, cleaned_data_dir, debug_user_item_feature_path, debug_cleaned_dir
 # from src.config import csv_sep
 # from src.ModelEval import ModelEval
 from scripts.train_config import config_dict
@@ -20,6 +20,11 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
 
+debug = True
+logging.basicConfig(level='INFO',
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    )
 
 mark = 'deepFM_1107_criteo'
 # mark = 'LR_1108_criteo'
@@ -29,6 +34,7 @@ mark = 'deepFM_1107_criteo'
 # mark = 'xgblr_new_1116_criteo'
 logging.info(f"Mark: {mark}")
 logging.info(config_dict[mark])
+
 
 
 
