@@ -24,6 +24,13 @@ config_dict = {
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }
+    , 'deepFM_1125_criteo': {
+        'feature_creator': DeepFMFeatureCreator
+        , 'pipeline': DeepFMPipeline
+        , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
+        , 'production_data_dir': 'data/raw_criteo_data/train.txt'
+        , 'dense_to_sparse': True
+    }
     ,    'WDL_1107_criteo': {
         'feature_creator': DeepFMFeatureCreator
         , 'pipeline': WideDeepPipeline

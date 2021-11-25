@@ -4,16 +4,19 @@
 # @Time    : 2021/11/6 下午7:55
 # @Disc    :
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder
+from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder, KBinsDiscretizer
 import tensorflow as tf
 import pandas as pd
 import numpy as np
+import logging
 from deepctr.models import DeepFM
 from deepctr.feature_column import SparseFeat, DenseFeat
 from sklearn.compose import ColumnTransformer
 
 from src.config import criteo_sparse_features, criteo_dense_features
 from src.Pipeline.BaseDNNPipeline import BaseDNNPipeline
+from src.DataPreprocess.DeepFMDataProcess import DeepFMDataProcess
+logging.getLogger(__name__)
 
 
 class DeepFMPipeline(BaseDNNPipeline):
@@ -33,6 +36,7 @@ class DeepFMPipeline(BaseDNNPipeline):
         df_for_encode_train = train_params['df_for_encode_train']
         batch_size = train_params['batch_size']
         epoches = train_params['epoches']
+        dense_to_sparse = train_params['dense_to_sparse']
 
         # # Info of all of the data
         # transformer = NewOrdinalEncoder(category_cols=criteo_sparse_features)
@@ -40,24 +44,27 @@ class DeepFMPipeline(BaseDNNPipeline):
         # # mms = MinMaxScaler(feature_range=(0, 1))
         # mms = NewMinMaxSaler(dense_cols=criteo_dense_features, feature_range=[0, 1])
         # df_for_encode_train = mms.fit_transform(df_for_encode_train)
+        # if dense_to_sparse:
+        #     numeric_transformer = KBinsDiscretizer(n_bins=20, encode='ordinal')
+        # else:
+        #     numeric_transformer = MinMaxScaler(feature_range=(0, 1))
+        # categorical_transformer = OrdinalEncoder(dtype=np.int32)
+        #
+        # self.preprocess_pipeline = ColumnTransformer(
+        #     transformers=[
+        #         ("cat", categorical_transformer, criteo_sparse_features),
+        #         ("num", numeric_transformer, criteo_dense_features),
+        #     ]
+        # )
+        self.preprocess_pipeline = DeepFMDataProcess(dense_feature=criteo_dense_features, sparse_feature=criteo_sparse_features
+                                                     ,dense_to_sparse=dense_to_sparse)
+        logging.info(self.preprocess_pipeline)
 
-        numeric_transformer = MinMaxScaler(feature_range=(0, 1))
-        categorical_transformer = OrdinalEncoder(dtype=np.int32)
-
-        self.preprocess_pipeline = ColumnTransformer(
-            transformers=[
-                ("cat", categorical_transformer, criteo_sparse_features),
-                ("num", numeric_transformer, criteo_dense_features),
-            ]
-        )
-
-        df_for_encode_train = pd.DataFrame(self.preprocess_pipeline.fit_transform(df_for_encode_train),
-                                           columns=df_for_encode_train.columns,
-                                           # dtype=[tf.int32]*len(criteo_sparse_features) + [tf.float32]*len(criteo_dense_features)
-                                           )
-
-        df_for_encode_train[criteo_sparse_features] = df_for_encode_train[criteo_sparse_features].astype("int32")
-        df_for_encode_train[criteo_dense_features] = df_for_encode_train[criteo_dense_features].astype('float32')
+        df_for_encode_train = self.preprocess_pipeline.fit_transform(df_for_encode_train)
+            # pd.DataFrame(self.preprocess_pipeline.fit_transform(df_for_encode_train),
+            #                                columns=df_for_encode_train.columns,
+            #                                # dtype=[tf.int32]*len(criteo_sparse_features) + [tf.float32]*len(criteo_dense_features)
+            #                                )
 
         fixlen_feature_columns = [SparseFeat(feat, vocabulary_size=df_for_encode_train[feat].max() + 1, embedding_dim=4)
                                   for i, feat in enumerate(criteo_sparse_features)] + [DenseFeat(feat, 1, )
@@ -73,7 +80,8 @@ class DeepFMPipeline(BaseDNNPipeline):
         #     , ("mms", mms)
         # ])
         # self.preprocess_pipeline = Pipeline(pre_process_pipeline_lst)
-        X = pd.DataFrame(self.preprocess_pipeline.transform(X), columns=X.columns)
+        # X = pd.DataFrame(self.preprocess_pipeline.transform(X), columns=X.columns)
+        X = self.preprocess_pipeline.transform(X)
         # X[criteo_sparse_features] = X[criteo_sparse_features].astype("int32")
         # X[criteo_dense_features] = X[criteo_dense_features].astype('float32')
         # feature_names = get_feature_names(linear_feature_columns + dnn_feature_columns)
@@ -104,7 +112,8 @@ class DeepFMPipeline(BaseDNNPipeline):
         return train_model_input
 
     def predict_proba(self, X):
-        X = pd.DataFrame(self.preprocess_pipeline.transform(X), columns=X.columns)
+        # X = pd.DataFrame(self.preprocess_pipeline.transform(X), columns=X.columns)
+        X = self.preprocess_pipeline.transform(X)
         trian_input = self._process_train_data(X)
         prob = self.model.predict(trian_input)
         return prob

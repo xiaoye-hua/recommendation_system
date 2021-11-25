@@ -26,7 +26,7 @@ logging.basicConfig(level='INFO',
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     )
 
-mark = 'deepFM_1107_criteo'
+mark = 'deepFM_1125_criteo'
 # mark = 'LR_1108_criteo'
 # mark = 'XGB_1108_criteo'
 # mark = 'xgblr_1109_criteo'
@@ -45,8 +45,6 @@ logging.info(config_dict[mark])
 pipeline_class = config_dict[mark]['pipeline']
 fc_class = config_dict[mark]['feature_creator']
 one_hot = config_dict[mark].get('one_hot', False)
-# dense_bin = config_dict[mark].get("dense_bin", False)
-# dense_standard = config_dict[mark].get('dense_standard', False)
 
 
 model_path = os.path.join('model_training', mark)
@@ -94,7 +92,7 @@ train_params = {
     , 'one_hot': one_hot
     , 'dense_bin': config_dict[mark].get("dense_bin", False)
     , 'dense_standard': config_dict[mark].get('dense_standard', False)
-    # , 'lr': True
+    , 'dense_to_sparse': config_dict[mark].get('dense_to_sparse', False)
 }
 pipeline.train(X=train.copy()[feature_cols], y=train[criteo_target_col], train_params=train_params)
 pipeline.save_pipeline()
