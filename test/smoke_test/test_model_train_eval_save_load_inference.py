@@ -64,6 +64,7 @@ class TestModelTrain(TestCase):
             "df_for_encode_train": features.copy()[feature_cols]
             , 'batch_size': 64
             , 'epoches': 1
+            , 'dense_to_sparse': True
         }
         DeepFM = DeepFMPipeline(model_path=model_dir, model_training=True)
         DeepFM.train(X=features.copy()[feature_cols], y=features[criteo_target_col], train_params=train_params)
