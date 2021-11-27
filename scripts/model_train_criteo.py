@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File    : model_train.py
+# @File    : movielen_model_train.py
 # @Author  : Hua Guo
 # @Time    : 2021/11/5 下午10:37
 # @Disc    :
@@ -20,13 +20,13 @@ from src.config import criteo_csv_sep, criteo_df_cols, criteo_target_col
 
 # =============== config ===============
 
-debug = True
+debug = False
 logging.basicConfig(level='INFO',
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     )
 
-mark = 'deepFM_1125_criteo'
+mark = 'deepFM_1107_criteo'
 # mark = 'LR_1108_criteo'
 # mark = 'XGB_1108_criteo'
 # mark = 'xgblr_1109_criteo'

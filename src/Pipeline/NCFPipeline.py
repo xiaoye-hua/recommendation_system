@@ -15,6 +15,7 @@ from sklearn.pipeline import Pipeline
 from src.Pipeline import BasePipeline
 from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
 from src.utils.plot_utils import binary_classification_eval
+logging.getLogger(__name__)
 
 
 class NCFPipeline(BasePipeline):
@@ -34,8 +35,13 @@ class NCFPipeline(BasePipeline):
 
     def _process_train_data(self, X):
         train_model_input = {}
-        for col in self.all_features:
-            train_model_input[col] = X[col].values
+        if self.model_training:
+            for col in self.all_features:
+                train_model_input[col] = X[col].values
+        else:
+            for idx, col in enumerate(self.all_features):
+                target_col = f"input_{idx+1}"
+                train_model_input[target_col] = X[col].values
         return train_model_input
 
     def train(self, X, y, train_params):
@@ -80,7 +86,7 @@ class NCFPipeline(BasePipeline):
         X = self._process_train_data(X=X)
         return self.model.predict(X)
 
-    def eval(self, X: pd.DataFrame, y: pd.DataFrame, default_fig_dir=None) -> None:
+    def eval(self, X: pd.DataFrame, y: pd.DataFrame, default_fig_dir='logs') -> None:
         if default_fig_dir is None:
             fig_dir = self.eval_result_path
         else:
@@ -93,6 +99,7 @@ class NCFPipeline(BasePipeline):
         binary_classification_eval(test_y=y, predict_prob=predict_prob, fig_dir=fig_dir)
 
     def load_pipeline(self) -> Tuple[Pipeline, tf.keras.models.Model]:
+        logging.info(f"Loading model from {self.model_path}...")
         pipeline = tf.keras.models.load_model(self.model_path)
         pre_pipeline = joblib.load(
             filename=os.path.join(self.model_path, self.preprocess_file_name)
@@ -104,5 +111,5 @@ class NCFPipeline(BasePipeline):
             value=self.preprocess_pipeline,
             filename=os.path.join(self.model_path, self.preprocess_file_name)
         )[0]
-        self.model.save(self.model_path)
+        tf.keras.models.save_model(model=self.model, filepath=self.model_path)
         logging.info(f'Model saved in {self.model_path}')
