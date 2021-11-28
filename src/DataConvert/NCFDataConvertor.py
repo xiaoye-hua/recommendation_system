@@ -49,6 +49,7 @@ class NCFDataConvertor(BaseDataConvertor):
         self.user_profile, self.item_profile, self.positive_train, self.group_truth = self._load_data()
 
     def _load_data(self):
+        logging.info(f"Loading original data...")
         origin_sep = "::"
         user_profile = pd.read_csv(os.path.join(self.input_dir, 'users.dat'), sep=origin_sep, header=None, names=origin_user_cols)
         item_profile = pd.read_csv(os.path.join(self.input_dir, 'movies.dat'), sep=origin_sep, header=None, names=orgin_movie_cols)
@@ -68,6 +69,7 @@ class NCFDataConvertor(BaseDataConvertor):
             positive_train, test_data = split_data_ml100k(data, self.num_users,
                                                       self.split_mode, self.test_ratio
                                                           )
+        logging.info('Loading finished')
         return user_profile, item_profile, positive_train, test_data
 
     def _get_neg_data(self):

@@ -25,6 +25,8 @@ else:
     user_item_path = user_item_feature_path
     train_data_path = data_cvt_config['train_data_path']
 
+logging.info(f'data convert config:')
+logging.info(data_cvt_config)
 convertor = NCFDataConvertor(input_dir=user_item_path,
                              output_dir=train_data_path
                              , split_method=data_cvt_config['split_method']
