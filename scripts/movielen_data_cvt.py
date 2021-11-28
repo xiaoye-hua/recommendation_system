@@ -3,22 +3,34 @@
 # @Author  : Hua Guo
 # @Time    : 2021/10/28 上午11:44
 # @Disc    :
+import logging
+
 from scripts.train_config import user_item_feature_path, cleaned_data_dir
 from src.DataConvert.NCFDataConvertor import NCFDataConvertor
-from scripts.train_config import debug_user_item_feature_path, debug_cleaned_dir, debug
+from scripts.train_config import debug_user_item_feature_path, debug_cleaned_dir
+from scripts.movielens_config import debug, mark, default_data_cvt_config, all_config
+
+logging.basicConfig(level='INFO',
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    )
+
+
+data_cvt_config: dict = all_config[mark].get('data_cvt_config', default_data_cvt_config)
 
 if debug:
     user_item_path = debug_user_item_feature_path
     train_data_path = debug_cleaned_dir
 else:
     user_item_path = user_item_feature_path
-    train_data_path = cleaned_data_dir
+    train_data_path = data_cvt_config['train_data_path']
 
-convertor = NCFDataConvertor(input_dir=user_item_path, output_dir=train_data_path
-                             , split_method='leave_one_out'
-                             , test_ratio=0.2
-                             # , split_mode='random'
-                             , negsample=410
+convertor = NCFDataConvertor(input_dir=user_item_path,
+                             output_dir=train_data_path
+                             , split_method=data_cvt_config['split_method']
+                             , test_ratio=data_cvt_config['test_ratio']
+                             , split_mode=data_cvt_config['split_mode']
+                             , negsample=data_cvt_config['negsample']
                              )
 convertor.convert()
 

@@ -41,7 +41,7 @@ class ItemPopPipeline(BasePipeline):
     def load_pipeline(self):
         pass
 
-    def eval(self, X, y):
+    def eval(self, X, y, **kwargs):
         return 0.5
         # predict_prob = self.predict_proba(X)
         # fpr, tpr, thresholds = roc_curve(y, predict_prob[:, 1])

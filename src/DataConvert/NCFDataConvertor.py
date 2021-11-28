@@ -32,7 +32,7 @@ class NCFDataConvertor(BaseDataConvertor):
         :param split_method:
         :param split_mode:  'random' or 'seq-aware'
         :param test_ratio:
-        :param negsample:
+        :param negsample: negative sample for each user
         """
         self.valid_split_method = ['leave_one_out', 'frac_split']
         assert split_method in ['leave_one_out', 'frac_split'], split_method

@@ -10,7 +10,7 @@ logging.getLogger(__name__)
 from scripts.train_config import user_item_feature_path, cleaned_data_dir, debug_user_item_feature_path, debug_cleaned_dir
 from src.config import csv_sep
 from src.ModelEval import ModelEval
-from scripts.movielens_config import train_config, debug, mark
+from scripts.movielens_config import all_config, debug, mark
 
 # =============== config ===============
 logging.basicConfig(level='INFO',
@@ -18,8 +18,8 @@ logging.basicConfig(level='INFO',
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     )
 
-pipeline_class = train_config[mark]['pipeline_class']
-fc_class = train_config[mark]['feature_creator_class']
+pipeline_class = all_config[mark]['pipeline_class']
+fc_class = all_config[mark]['feature_creator_class']
 
 if debug:
     user_item_path = debug_user_item_feature_path
