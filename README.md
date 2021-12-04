@@ -4,13 +4,16 @@ Playground of recommendation system
 ## How to run the code
 
 ### Step 1. Environment Setup
+```shell script
+conda create --name rec_sys --file requirements.txt python=3.6
+conda activate rec_sys
+```
 
 ### Step 2. 
 ```shell script
 export PYTHONPATH=./:PYTHONPATH
 ```
 
-## Evaluation Report
+## Benchmark Report
 
-1. [Data EDA & Insights]()
 2. [CTR Prediction Algorithm Evaluation](report/ctr_prediction_algorithm_evaluation.md)
