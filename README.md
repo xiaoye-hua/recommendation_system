@@ -16,4 +16,4 @@ export PYTHONPATH=./:PYTHONPATH
 
 ## Benchmark Report
 
-2. [CTR Prediction Algorithm Evaluation](report/ctr_prediction_algorithm_evaluation.md)
+2. [CTR Prediction Algorithm Evaluation](report/model_performane.xlsx)
