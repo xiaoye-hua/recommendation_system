@@ -11,6 +11,7 @@ from src.Pipeline.WideDeepPipeline import WideDeepPipeline
 from src.Pipeline.LogisticRegressionPipeline import LogisticRegressionPipeline
 from src.Pipeline.XGBoostPipeline import XGBoostPipeline
 from src.Pipeline.XGBoostLRPipeline import XGBoostLRPipeline
+from src.Pipeline.XGBoostLRPipeline2 import XGBoostLRPipeline2
 from src.Pipeline.NCFPipeline import NCFPipeline
 from src.Pipeline.ItemPopPipeline import ItemPopPipeline
 
@@ -83,7 +84,7 @@ config_dict = {
     # this set of params does not work right now.
     , 'xgblr_1116_criteo': {
         'feature_creator': DeepFMFeatureCreator
-        , 'pipeline': XGBoostLRPipeline
+        , 'pipeline': XGBoostLRPipeline2
         , 'debug_data_dir': 'data/debug/debug_criteo_data/train.txt'
         , 'production_data_dir': 'data/raw_criteo_data/train.txt'
     }

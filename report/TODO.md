@@ -17,3 +17,7 @@ def _process_train_data(self, X):
             train_model_input[target_col] = X[col]
     return train_model_input
 ```
+
+## Microsoft Recommender Package
+
+pyspark evaluation takes less time but it takes plenty of time to transform pandas dataframe to pysaprk dataframe ([code](https://github.com/xiaoye-hua/recommenders/blob/benchmark_gh/examples/02_model_hybrid/ncf_deep_dive.ipynb))
