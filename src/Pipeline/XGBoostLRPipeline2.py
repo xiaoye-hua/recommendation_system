@@ -20,15 +20,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, KBinsDiscretizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.compose import ColumnTransformer
-
-from src.Pipeline import BasePipeline
-from src.utils.plot_utils import plot_feature_importances, binary_classification_eval
-from src.DataPreprocess.NewOrdinalEncoder import NewOrdinalEncoder
 from src.Pipeline.XGBoostPipeline import XGBoostPipeline
 from src.config import criteo_dense_features, criteo_sparse_features
-
-from src.DataPreprocess.XGBoostLRDataProcess import XGBoostLRDataProcess
-
 
 class XGBoostLRPipeline2(XGBoostPipeline):
     def train(self, X: pd.DataFrame, y: pd.DataFrame, train_params: dict) -> None:
@@ -36,45 +29,22 @@ class XGBoostLRPipeline2(XGBoostPipeline):
 
         df_for_encode_train = train_params['df_for_encode_train']
         train_valid = train_params.get("train_valid", False)
-        # transformer = NewOrdinalEncoder(category_cols=self.cate_encode_cols)
-        # transformer.fit(df_for_encode_train)
-        # X = transformer.transform(X=X)
-        # pipeline_lst.append(("new_ordinal_transformer", transformer))
-        # self.ordianl = transformer
+
+        # XGBoost
         self.xgb = XGBClassifier(**self.model_params)
         print(f"Model params are {self.xgb.get_params()}")
-        lr_dense_transformer = Pipeline([
-            ('standard', StandardScaler())
-            ,('dense_bin', KBinsDiscretizer(n_bins=20, encode='ordinal'))
-        ])
-        cate_encoder = OneHotEncoder()
-        lr_sparse_transformer = Pipeline([
-            ('one_hot', cate_encoder)
-            , ('pca', TruncatedSVD(n_components=50))
-        ])
         xgb_sparrse_transformer = Pipeline([
             ('ordinal', OrdinalEncoder())
         ])
-        self.transformer = ColumnTransformer(
-            transformers=[
-                ("lr_dense", lr_dense_transformer, criteo_dense_features),
-                ("lr_sparse", lr_sparse_transformer, criteo_sparse_features),
-            ]
-            , remainder='drop'
-        )
         self.xgb_transformer = ColumnTransformer(
             transformers=[
                 ("xgb_sparse", xgb_sparrse_transformer, criteo_sparse_features),
             ]
             , remainder='passthrough'
         )
-        self.transformer.fit(df_for_encode_train.copy())
         self.xgb_transformer.fit(df_for_encode_train.copy())
-        logging.info(f"LR transformer info: ")
-        logging.info(self.transformer)
         logging.info(f"XGB transformer info: ")
         logging.info(self.xgb_transformer)
-
         if train_valid:
             train_X, test_X, train_y, test_y = train_test_split(self.xgb_transformer.transform(X.copy()), y, test_size=0.2)
             self.xgb.fit(X=train_X, y=train_y, verbose=True, eval_metric='logloss'
@@ -83,7 +53,31 @@ class XGBoostLRPipeline2(XGBoostPipeline):
         else:
             self.xgb.fit(X=X, y=y, verbose=True, eval_metric='logloss'
                          , eval_set=[[X, y]])
+        # XGB to LR
         leave_info = self.xgb.apply(self.xgb_transformer.transform(X.copy()))#[:, 70:]
+
+        # linear regression
+        lr_dense_transformer = Pipeline([
+            ('standard', StandardScaler())
+            , ('dense_bin', KBinsDiscretizer(n_bins=20, encode='ordinal'))
+        ])
+        cate_encoder = OneHotEncoder()
+        lr_sparse_transformer = Pipeline([
+            ('one_hot', cate_encoder)
+            , ('pca', TruncatedSVD(n_components=50))
+        ])
+
+        self.transformer = ColumnTransformer(
+            transformers=[
+                ("lr_dense", lr_dense_transformer, criteo_dense_features),
+                ("lr_sparse", lr_sparse_transformer, criteo_sparse_features),
+            ]
+            , remainder='drop'
+        )
+        self.transformer.fit(df_for_encode_train.copy())
+        logging.info(f"LR transformer info: ")
+        logging.info(self.transformer)
+
         logging.info(f"leave dim {X.shape}")
         self.one_hot = OneHotEncoder()
         logging.info(f"one hot...")
